@@ -75,5 +75,14 @@ namespace UnitTest1
 			list.push_front(new_item);
 			Assert::AreEqual(new_item, list.at(0));
 		}
+
+		//pop_back
+		TEST_METHOD(list_push_front_with_empty_list)
+		{
+			int item = 2;
+			List<int> list = List<int>();
+			list.push_front(item);
+			Assert::AreEqual(item, list.at(0));
+		}
 	};
 }
