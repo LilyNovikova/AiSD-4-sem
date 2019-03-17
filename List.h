@@ -28,15 +28,18 @@ public:
 
 	void push_back(T new_item)
 	{
-		Node<T> node = Node<T>(new_item);
-		if (!head)
+		Node<T> node= Node<T>(new_item);
+		if (this.head == nullptr)
 		{
-			head = &node;
+			this.head = &node;
 			tail = &node;
 		}
 		else
-			tail = &node;
-		tail = &node;
+		{
+			tail->next = &node;
+			tail = tail->next;
+			tail->next = nullptr;
+		}
 		list_size++;
 	}
 
