@@ -24,14 +24,22 @@ public:
 	//void set_next(Node<T>* next_node);
 	~Node() {}
 
-	void destroy_from_this(Node * node)
+	void destroy_from_this()
 	{
-		while (node)
+		/*while (this)
 		{
-			destroy_from_this(node->next);
-			delete node;
-		}
+			(this->next)->destroy_from_this();
+			delete this;
+		}*/
 	}
 
 	T get_item() { return item; }
+	void set_item(T new_item) { item = new_item; }
+
+	//output operator
+	friend std::ostream & operator <<(std::ostream & out, Node<T>& node)
+	{
+			out << node->get_item() << endl;
+		return out;
+	}
 };

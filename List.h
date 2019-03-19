@@ -7,11 +7,11 @@ class List
 private:
 	Node <T> *head;
 	Node <T> *tail;
-	int list_size;
+	size_t list_size;
 
 public:
 	List<T>() { head = nullptr; tail = nullptr; list_size = 0; }
-	~List<T>() { if (head) head->destroy_from_this(head); }
+	~List<T>() { if (head) clear(); }
 	/*void push_back(T new_item); // add new element after the tail of the list
 	void push_front(T new_item);  // add new element before the head of the list
 	void pop_back(); // delete last element
@@ -26,82 +26,92 @@ public:
 	*/
 	//friend std::ostream operator<<(std::ostream & os, List<T>& list);	//Перегрузка оператора вывода
 
+	// add new element after the tail of the list
 	void push_back(T new_item)
 	{
-		Node<T> node= Node<T>(new_item);
-		if (this.head == nullptr)
+		if (!head)
 		{
-			this.head = &node;
-			tail = &node;
+			head = new Node<T>(new_item);
+			tail = head;
 		}
 		else
 		{
-			tail->next = &node;
+			tail->next = new Node<T>(new_item);
 			tail = tail->next;
-			tail->next = nullptr;
 		}
 		list_size++;
 	}
 
+	// add new element before the head of the list
 	void push_front(T new_item)
 	{
-		Node<T> node = Node<T>(new_item);
-		node.next = head;
-		head = &node;
-		if (!tail) tail = &node;
+		Node<T>* node = head;
+		head = new Node<T>(new_item);
+		head->next = node;
+		if (!tail) tail = head;
 		list_size++;
 	}
 
+	// delete last element
 	void pop_back()
 	{
 		if (!head) throw out_of_range("You tried to delete an item from empty list");
-
-		Node<T> *node = head;
-		while (node->next != tail)
-			node = node->next;
-		tail = node;
-		*(node->next).~Node();
-		tail->next = nullptr;
+		if (list_size == 1)
+		{
+			delete head;
+			head = tail = nullptr;
+		}
+		else
+		{
+			Node<T> *node = head;
+			while (node->next != tail)
+				node = node->next;
+			tail = node;
+			(node->next)->~Node<T>();
+			tail->next = nullptr;
+		}
 		list_size--;
 
 
 	}
 
+	// delete first element
 	void pop_front()
 	{
 		if (!head) throw out_of_range("You tried to delete an item from empty list");
+		if (list_size == 1)
+		{
+			delete head;
+			head = tail = nullptr;
+		}
 		Node<T>* node = head;
 		head = head->next;
-		*node.~Node();
+		node->~Node<T>();
 		list_size--;
 
 	}
 
-	void insert(T new_item, int index)
+	// add new element before the one with this index
+	void insert(T new_item, size_t index)
 	{
-		if (index < 0) throw invalid_argument("Item index < 0");
-		if (index >= list_size) throw out_of_range("Too big index");
+		if (!head || !index) this->push_front(new_item);
 		else
-		{
-			Node<T> new_node = Node<T>(new_item);
-			if (!index) {
-				new_node.next = head;
-				head = &new_node;
-			}
-			else {
-				Node<T> *node = head;
+			if (index + 1 > list_size) throw out_of_range("Index is greater than list size");
+			else
+			{
+				Node<T> *current = head;
 				for (int i = 0; i < index - 1; i++)
-					node = node->next;
-				new_node.next = node->next;
-				node->next = &new_node;
+					current = current->next;
+				Node<T> *new_node = new Node<T>(new_item);
+				new_node->next = current->next;
+				current->next = new_node;
 			}
-		}
 		list_size++;
 	}
 
-	T at(int index)
+	// get an element by the index
+	T at(size_t index)
 	{
-		if (index < 0) throw invalid_argument("Item index < 0");
 		if (index + 1 > list_size) throw out_of_range("Too big index");
 
 		Node<T> *node = head;
@@ -111,14 +121,16 @@ public:
 
 	}
 
-	void remove(int index)
+	// delete an element by the index
+	void remove(size_t index)
 	{
-		if (index < 0) throw invalid_argument("Item index < 0");
-		if (index + 1 > list_size) throw out_of_range("Too big index");
-
+		if (!head) throw out_of_range("You tried to remove an item from empty list");
+		else
+			if (index + 1 > list_size) throw out_of_range("Index is greater than list size");
 		if (!index) {
 			Node<T>* to_delete = head;
-			head = head->next;
+			if (list_size == 1) head = tail = nullptr;
+			else head = head->next;
 			delete to_delete;
 		}
 		else
@@ -133,38 +145,48 @@ public:
 		list_size--;
 	}
 
-	int get_size()
+	// get the list size
+	size_t get_size()
 	{
 		return list_size;
 	}
 
+	// delete the list
 	void clear()
 	{
-		if (head) destroy_from_this(head);
+		if (head)
+		{
+			Node<T>* current = head;
+			do
+			{
+				Node<T>* to_delete = current;
+				current = current->next;
+				delete to_delete;
+			} while (current);
+		}
 		head = nullptr;
 		tail = nullptr;
 		list_size = 0;
 	}
 
-	void set(T new_item, int index)
+	//replace an element by index
+	void set(T new_item, size_t index)
 	{
-		if (index < 0) throw invalid_argument("Item index < 0");
-		if (index + 1 > list_size) throw out_of_range("Too big index");
-		Node<T> new_node = Node<T>(new_item);
+		if (index + 1 > list_size) throw out_of_range("Index is greater than list size");
 		Node<T>* current_node = head;
 		//finding an element with this index
 		for (int i = 0; i < index; i++) { current_node = current_node->next; }
-
-		new_node.next = (current_node->next)->next;
-		current_node = &new_node;
+		current_node->set_item(new_item);
 	}
 
-	bool isEmpty()
+	//check isf list is empty
+	bool is_empty()
 	{
-		if (list_size) return false;
+		if (list_size || head != nullptr) return false;
 		return true;
 	}
 
+	//output operator
 	friend std::ostream & operator <<(std::ostream & out, List<T>& list) {
 		Node<T> * node = list.head;
 		while (node)
