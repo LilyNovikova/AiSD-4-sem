@@ -127,12 +127,10 @@ public:
 		if (!head) throw out_of_range("You tried to remove an item from empty list");
 		else
 			if (index + 1 > list_size) throw out_of_range("Index is greater than list size");
-		if (!index) {
-			Node<T>* to_delete = head;
-			if (list_size == 1) head = tail = nullptr;
-			else head = head->next;
-			delete to_delete;
-		}
+		if (!index)
+			pop_front();
+		else if (index == list_size - 1)
+			pop_back();
 		else
 		{
 			Node<T>* node = head;
@@ -173,10 +171,14 @@ public:
 	void set(T new_item, size_t index)
 	{
 		if (index + 1 > list_size) throw out_of_range("Index is greater than list size");
-		Node<T>* current_node = head;
-		//finding an element with this index
-		for (int i = 0; i < index; i++) { current_node = current_node->next; }
-		current_node->set_item(new_item);
+		if (index == list_size - 1) tail->set_item(new_item);
+		else
+		{
+			Node<T>* current_node = head;
+			//finding an element with this index
+			for (int i = 0; i < index; i++) { current_node = current_node->next; }
+			current_node->set_item(new_item);
+		}
 	}
 
 	//check isf list is empty
