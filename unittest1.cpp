@@ -62,7 +62,7 @@ namespace UnitTest1
 			list.push_back(2);
 			Assert::AreEqual(2, list.at(list.get_size() - 1));
 		}
-		
+
 		TEST_METHOD(list_push_back)
 		{
 			List<int> list = List<int>();
@@ -102,14 +102,10 @@ namespace UnitTest1
 			list.push_back(5);
 			Assert::AreEqual(5, list.at(3));
 		}
-		
+
 		TEST_METHOD(list_pop_back_with_empty_list)
 		{
 			List<int> list = List<int>();
-			list.push_back(1);
-			list.push_back(2);
-			list.push_back(3);
-			list.push_back(4);
 			try
 			{
 				list.pop_back();
@@ -118,6 +114,15 @@ namespace UnitTest1
 			{
 				Assert::AreEqual("You tried to delete an item from empty list", e.what());
 			}
+		}
+
+		TEST_METHOD(list_pop_back_with_one_element_list)
+		{
+			List<int> list = List<int>();
+			list.push_back(1);
+			list.pop_back();
+
+			Assert::IsTrue(list.is_empty());
 		}
 
 		//pop_front
@@ -145,7 +150,16 @@ namespace UnitTest1
 				Assert::AreEqual("You tried to delete an item from empty list", e.what());
 			}
 		}
-		
+
+		TEST_METHOD(list_pop_front_with_one_element_list)
+		{
+			List<int> list = List<int>();
+			list.push_back(1);
+			list.pop_front();
+
+			Assert::IsTrue(list.is_empty());
+		}
+
 		//insert
 		TEST_METHOD(list_insert_front)
 		{
@@ -376,7 +390,7 @@ namespace UnitTest1
 				Assert::AreEqual("Index is greater than list size", e.what());
 			}
 		}
-		
+
 		//is_empty
 		TEST_METHOD(list_is_empty)
 		{
