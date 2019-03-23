@@ -39,12 +39,20 @@ namespace UnitTest1
 		////////////
 
 		//at
-		TEST_METHOD(list_at)
+		TEST_METHOD(list_at_int)
 		{
 			List<int> list = List<int>();
 			list.push_back(0);
 			list.push_back(1);
 			Assert::AreEqual(1, list.at(1));
+		}
+
+		TEST_METHOD(list_at_char)
+		{
+			List<char> list = List<char>();
+			list.push_back('a');
+			list.push_back('b');
+			Assert::AreEqual('a', list.at(0));
 		}
 
 		//push_back
@@ -314,6 +322,29 @@ namespace UnitTest1
 			list.push_back(4);
 			list.set(10, 2);
 			Assert::AreEqual(10, list.at(2));
+		}
+
+		TEST_METHOD(list_set_back)
+		{
+			List<int> list;
+			list.push_back(1);
+			list.push_back(2);
+			list.push_back(3);
+			list.push_back(4);
+			list.push_back(5);
+			list.set(10, 4);
+			Assert::AreEqual(10, list.at(4));
+		}
+
+		TEST_METHOD(list_set_front)
+		{
+			List<int> list;
+			list.push_back(1);
+			list.push_back(2);
+			list.push_back(3);
+			list.push_back(4);
+			list.set(10, 0);
+			Assert::AreEqual(10, list.at(0));
 		}
 
 		TEST_METHOD(list_set_out_of_range)
