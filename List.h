@@ -84,9 +84,12 @@ public:
 			delete head;
 			head = tail = nullptr;
 		}
-		Node<T>* node = head;
-		head = head->next;
-		node->~Node<T>();
+		else
+		{
+			Node<T>* node = head;
+			head = head->next;
+			node->~Node<T>();
+		}
 		list_size--;
 
 	}
