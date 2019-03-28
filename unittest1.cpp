@@ -218,13 +218,6 @@ namespace UnitTest1
 			Assert::AreEqual(10, list.at(0));
 		}
 
-		TEST_METHOD(list_insert_with_empty_list_and_not_zero_index)
-		{
-			List<int> list = List<int>();
-			list.insert(10, 3);
-			Assert::AreEqual(10, list.at(0));
-		}
-
 		//remove
 		TEST_METHOD(list_remove)
 		{
@@ -245,8 +238,8 @@ namespace UnitTest1
 			list.push_back(2);
 			list.push_back(3);
 			list.push_back(4);
-			list.insert(10, 0);
-			Assert::AreEqual(10, list.at(0));
+			list.remove(0);
+			Assert::AreEqual(2, list.at(0));
 		}
 
 		TEST_METHOD(list_remove_back)
@@ -256,8 +249,8 @@ namespace UnitTest1
 			list.push_back(2);
 			list.push_back(3);
 			list.push_back(4);
-			list.insert(10, 3);
-			Assert::AreEqual(10, list.at(3));
+			list.remove(3);
+			Assert::AreEqual(3, list.at(list.get_size()-1));
 		}
 
 		TEST_METHOD(list_remove_out_of_range)
