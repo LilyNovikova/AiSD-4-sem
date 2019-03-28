@@ -1,5 +1,10 @@
 #pragma once
-#include "basic.h"
+#include "stdio.h"
+#include "conio.h"
+#include "cstdlib"
+#include "iostream"
+#include <string.h>
+#include <stdexcept>
 
 
 using namespace std;

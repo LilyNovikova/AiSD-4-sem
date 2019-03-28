@@ -97,7 +97,7 @@ public:
 	// add new element before the one with this index
 	void insert(T new_item, size_t index)
 	{
-		if (!head || !index) this->push_front(new_item);
+		if (!index) this->push_front(new_item);
 		else
 			if (index + 1 > list_size) throw out_of_range("Index is greater than list size");
 			else
@@ -108,8 +108,9 @@ public:
 				Node<T> *new_node = new Node<T>(new_item);
 				new_node->next = current->next;
 				current->next = new_node;
+				list_size++;
 			}
-		list_size++;
+		
 	}
 
 	// get an element by the index
@@ -142,8 +143,9 @@ public:
 			Node<T>* to_delete = node->next;
 			node->next = node->next->next;
 			delete to_delete;
+			list_size--;
 		}
-		list_size--;
+		
 	}
 
 	// get the list size
@@ -196,7 +198,7 @@ public:
 		Node<T> * node = list.head;
 		while (node)
 		{
-			out << node->get_item() << endl;
+			out << node->get_item()<<" ";// << endl;
 			node = node->next;
 		}
 		return out;
