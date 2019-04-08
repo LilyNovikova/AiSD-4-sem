@@ -34,7 +34,9 @@ bool compare_str(char* s1, char* s2);
 char* char_to_str(char c);
 
 //
-int contain(char *str, char *pod);
+int contain(char *str, char *substr);
+
+
 /*std::ostream & operator <<(std::ostream & out, string str)
 {
 	out << str.front();

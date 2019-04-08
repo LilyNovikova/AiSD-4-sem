@@ -7,7 +7,6 @@ public:
 	char* item;
 	size_t frequency;
 	char* code;
-	size_t level;
 	ListTreeNode* parent;
 	ListTreeNode* left;
 	ListTreeNode* right;
@@ -64,7 +63,6 @@ public:
 		return node;
 
 	}
-
 	ListTreeNode* list_of_symbols(ListTreeNode* list)
 	{
 		if (right) list = right->list_of_symbols(list);
@@ -87,15 +85,15 @@ public:
 		//throw invalid_argument("Can`t find this item");
 	}
 
-	ListTreeNode* decode_node(char* item_code)
+	/*ListTreeNode* decode_node(char* item_code)
 	{
 		if (!right && !left) return this;
 		if (item_code[0] == '1')
-			return right->decode_node(item_code++);
+			return right->decode_node(pop_front_symbol(item_code));
 		else
 			if (item_code[0] == '0')
-				return left->decode_node(item_code++);
-	}
+				return left->decode_node(pop_front_symbol(item_code));
+	}*/
 
 	void output_list()
 	{
@@ -117,11 +115,14 @@ public:
 				right->output_tree(level + 1);
 			for (int i = 1; i < level; i++)
 			{
-				cout << print_nchar(' ', 8) << '|';
+				cout << print_nchar(' ', 11) << '|';
 			}
 			if (level)
-				cout << print_nchar(' ', 9);
-			cout << '(' << item << ';' << frequency << ';' /*<< (code)?code:' '*/ << ')';
+				cout << print_nchar(' ', 12);
+			if (code)
+				cout << '[' << item << ';' << frequency << ';' << code << ']';
+			else
+				cout << '[' << item << ';' << frequency << ';' << " ]";
 			if (left&&right)
 			{
 				cout << "<" << endl;
@@ -134,7 +135,7 @@ public:
 				else
 					if (left)
 					{
-						cout << "L" << endl;
+						cout << "\\" << endl;
 					}
 					else
 					{
@@ -146,7 +147,23 @@ public:
 		}
 	}
 
+	void clear_tree()
+	{
+		if(right) right->clear_tree();
+		if (left) left->clear_tree();
+		delete(this);
+	}
 
-	~ListTreeNode() {}
+	~ListTreeNode() 
+	{
+		if (item) free(item);
+		if (code) free(code);
+	}
+
+	/*bool operator>(const ListTreeNode& node1, const ListTreeNode& node2)
+	{
+		out < str.front();
+		return out;
+	}*/
 };
 

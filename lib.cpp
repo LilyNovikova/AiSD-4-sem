@@ -19,7 +19,7 @@ char * copy_str(char * str)
 	if (str != nullptr)
 	{
 		new_str = new char(strlen(str) + 1);
-		if (new_str != NULL)
+		if (new_str)
 		{
 			for (int i = 0; i < strlen(str); i++)
 				*(new_str + i) = *(str + i);
@@ -55,7 +55,7 @@ char *con_str(char *str1, char *str2)
 	return str;
 }
 
-char * push_back_symbol(char * str, char symbol)
+/*char * push_back_symbol(char * str, char symbol)
 {
 	size_t len;
 	if(str) len = strlen(str);
@@ -70,7 +70,7 @@ char * push_back_symbol(char * str, char symbol)
 		new_str[len + 1] = 0;
 	}
 	return new_str;
-}
+}*/
 
 char * pop_front_symbol(char * str)
 {
@@ -91,7 +91,7 @@ char * pop_front_symbol(char * str)
 	return new_str;
 }
 
-char * pop_front_nsymbols(char * str, size_t n)
+/*char * pop_front_nsymbols(char * str, size_t n)
 {
 	if (!str) throw invalid_argument("You tried to delete symbols from empty string");
 	char *new_str = nullptr;
@@ -108,7 +108,7 @@ char * pop_front_nsymbols(char * str, size_t n)
 		}
 	}
 	return new_str;
-}
+}*/
 
 bool compare_str(char * s1, char * s2)
 {
@@ -136,19 +136,19 @@ char * char_to_str(char c)
 	return (char*)str;
 }
 
-int contain(char *str, char *pod)
+int contain(char *str, char *substr)
 {
-	if (pod == NULL)
+	if (!substr)
 		return 1;
-	if (str == NULL)
+	if (!str)
 		return 0;
 	int flag_find = 0;                //Флаг нахождения подстроки в строке
 	for (int i = 0; ((i < strlen(str)) && !flag_find); i++)
 	{
 		int f_match = 0;            //Флаг нахождения несовпадения
-		for (int j = 0; ((j < strlen(pod)) && !f_match); j++)
+		for (int j = 0; ((j < strlen(substr)) && !f_match); j++)
 		{
-			if (*(pod + j) != *(str + i + j)) f_match = 1;
+			if (*(substr + j) != *(str + i + j)) f_match = 1;
 		}
 		if (!f_match) flag_find = 1;
 	}
@@ -156,7 +156,7 @@ int contain(char *str, char *pod)
 }
 
 //if check_number is power of number
-bool is_power_of(int number, int check_number)
+/*bool is_power_of(int number, int check_number)
 {
 	if (!check_number && check_number != number)
 	{
@@ -167,4 +167,4 @@ bool is_power_of(int number, int check_number)
 			return true;
 	}
 	return false;
-}
+}*/

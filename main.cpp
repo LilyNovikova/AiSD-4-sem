@@ -5,25 +5,16 @@ using namespace std;
 int main()
 {
 	ListTree huff;
-	huff.add_to_alphabet((char*)"m", 1);
-	huff.output_list();
-	huff.add_to_alphabet((char*)"e", 2);
-	huff.output_list();
-	huff.add_to_alphabet((char*)"s", 2);
-	huff.output_list();
-	huff.add_to_alphabet((char*)"a", 1);
-	huff.output_list();
-	huff.add_to_alphabet((char*)"g", 1);
-	huff.output_list();
-	//huff.add_to_alphabet((char*)"a", 5);
 
-	char* code = huff.code((char*)"message");
-	huff.output_tree();
+	char* code = huff.code((char*)"it is a test string");
+	
 	cout << "code: " << code << endl;
 	char* mess = huff.decode(code);
 	cout << "mess: " << mess << endl;
+	cout << "alphabet:";
+	(huff.get_alphbet())->output_list();
 	cout << "coding tree: " << endl;
-	
+	huff.output_tree();
 	_getch();
 	return 0;
 }
