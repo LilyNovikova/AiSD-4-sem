@@ -16,7 +16,7 @@ char * copy_str(char * str)
 {
 
 	char *new_str = nullptr;
-	if (str != nullptr)
+	if (str)
 	{
 		new_str = new char(strlen(str) + 1);
 		if (new_str)
@@ -41,6 +41,7 @@ char *con_str(char *str1, char *str2)
 	else len2 = strlen(str2);
 
 	int len = len1 + len2;
+	if (!len) return nullptr;
 	int i = 0;
 	int j = 0;
 	char *str = (char*)malloc((len + 1) * sizeof(char));
@@ -72,9 +73,9 @@ char *con_str(char *str1, char *str2)
 	return new_str;
 }*/
 
-char * pop_front_symbol(char * str)
+/*char * pop_front_symbol(char * str)
 {
-	if (!str) throw invalid_argument("You tried to delete a symbol from empty string");
+	if (!str || !strlen(str)) throw invalid_argument("You tried to delete a symbol from empty string");
 	char *new_str = nullptr;
 	size_t len = strlen(str);
 	if (len > 1)
@@ -89,7 +90,7 @@ char * pop_front_symbol(char * str)
 		}
 	}
 	return new_str;
-}
+}*/
 
 /*char * pop_front_nsymbols(char * str, size_t n)
 {
@@ -110,33 +111,47 @@ char * pop_front_symbol(char * str)
 	return new_str;
 }*/
 
-bool compare_str(char * s1, char * s2)
+//if s1 = s2 returns 0, if s1 > s2 returns 1, if s1 < s2 returns -1 
+int compare_str(char * s1, char * s2)
 {
 	if (!s1 && !s2)
-		return true;
+		return 0;
 	if (s1 && !s2)
-		return false;
+		return 1;
 	if (!s1 && s2)
-		return false;
-	if (strlen(s1) != strlen(s2)) return false;
-	int len = strlen(s1);
+		return -1;
+
+	int len = strlen(s1) > strlen(s2) ? strlen(s2) : strlen(s1);
 
 	for (int i = 0; i <= len; i++)
 	{
-		if (s1[i] != s2[i]) return false;
+		if (s1[i] > s2[i])
+			return 1;
+		if (s1[i] < s2[i])
+			return -1;
 	}
-	return true;
+	return 0;
 }
 
 char * char_to_str(char c)
 {
-	char* str = (char*)malloc(2 * sizeof(char));
-	str[0] = c;
-	str[1] = 0;
-	return (char*)str;
+	char* str = nullptr;
+	if (c == 0)
+	{
+		str = (char*)malloc(sizeof(char));
+		str[0] = 0;
+	}
+	else
+	{
+		str = (char*)malloc(2 * sizeof(char));
+		str[0] = c;
+		str[1] = 0;
+	}
+
+	return str;
 }
 
-int contain(char *str, char *substr)
+bool contain(char *str, char *substr)
 {
 	if (!substr)
 		return 1;
@@ -145,12 +160,12 @@ int contain(char *str, char *substr)
 	int flag_find = 0;                //Флаг нахождения подстроки в строке
 	for (int i = 0; ((i < strlen(str)) && !flag_find); i++)
 	{
-		int f_match = 0;            //Флаг нахождения несовпадения
-		for (int j = 0; ((j < strlen(substr)) && !f_match); j++)
+		int f_match = 1;            //Флаг совпадения строк
+		for (int j = 0; ((j < strlen(substr)) && f_match); j++)
 		{
-			if (*(substr + j) != *(str + i + j)) f_match = 1;
+			if (substr[j] != str[i + j]) f_match = 0;
 		}
-		if (!f_match) flag_find = 1;
+		if (f_match) flag_find = 1;
 	}
 	return flag_find;
 }

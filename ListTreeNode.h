@@ -38,6 +38,7 @@ public:
 
 	void set_code()
 	{
+		if (!this) throw runtime_error("Node doesn`t exist");
 		if (!right && !left && !parent)
 		{
 			code = (char*)"0";
@@ -45,7 +46,14 @@ public:
 		if (right)
 		{
 			right->code = con_str(code, (char*)"1");
-			right->set_code();
+			try
+			{
+				right->set_code();
+			}
+			catch (runtime_error e)
+			{
+				throw runtime_error("Node doesn`t exist");
+			}
 		}
 		if (left)
 		{
@@ -65,6 +73,7 @@ public:
 	}
 	ListTreeNode* list_of_symbols(ListTreeNode* list)
 	{
+		if (!this) throw runtime_error("Node doesn`t exist");
 		if (right) list = right->list_of_symbols(list);
 		if (left) list = left->list_of_symbols(list);
 
@@ -75,35 +84,31 @@ public:
 
 	ListTreeNode* find(char* item_to_find)
 	{
-		if (compare_str(item, item_to_find)) return this;
+		if (!this) throw runtime_error("Node doesn`t exist");
+		if (compare_str(item, item_to_find) == 0) return this;
+		else if (!left && !right) throw invalid_argument("Can`t find this item");
 		if (right)
 			if (contain(right->item, item_to_find))
 				return right->find(item_to_find);
 		if (left)
 			if (contain(left->item, item_to_find))
 				return left->find(item_to_find);
-		//throw invalid_argument("Can`t find this item");
-	}
 
-	/*ListTreeNode* decode_node(char* item_code)
-	{
-		if (!right && !left) return this;
-		if (item_code[0] == '1')
-			return right->decode_node(pop_front_symbol(item_code));
-		else
-			if (item_code[0] == '0')
-				return left->decode_node(pop_front_symbol(item_code));
-	}*/
+
+	}
 
 	void output_list()
 	{
-		if (code)
-			cout << '[' << item << ';' << frequency << ';' << code << ']';
-		else
-			cout << '[' << item << ';' << frequency << ';' << " ]";
-		if (next) next->output_list();
-		else
-			cout << endl;
+		if (this)
+		{
+			if (code)
+				cout << '[' << item << ';' << frequency << ';' << code << ']';
+			else
+				cout << '[' << item << ';' << frequency << ';' << " ]";
+			if (next) next->output_list();
+			else
+				cout << endl;
+		}
 	}
 
 	void output_tree(size_t level)
@@ -122,7 +127,8 @@ public:
 			if (code)
 				cout << '[' << item << ';' << frequency << ';' << code << ']';
 			else
-				cout << '[' << item << ';' << frequency << ';' << " ]";
+				printf("[%s;%i; ]", item, frequency);
+				//cout << '[' << item << ';' << frequency << ';' << " ]";
 			if (left&&right)
 			{
 				cout << "<" << endl;
@@ -149,12 +155,12 @@ public:
 
 	void clear_tree()
 	{
-		if(right) right->clear_tree();
+		if (right) right->clear_tree();
 		if (left) left->clear_tree();
 		delete(this);
 	}
 
-	~ListTreeNode() 
+	~ListTreeNode()
 	{
 		if (item) free(item);
 		if (code) free(code);

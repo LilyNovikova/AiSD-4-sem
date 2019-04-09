@@ -44,6 +44,7 @@ public:
 
 	void set_alphabet(char* message)
 	{
+		if (!message) throw invalid_argument("Message to code is empty");
 		ListTreeNode* list_head = nullptr;
 		for (int i = 0; i < strlen(message); i++)
 		{
@@ -55,20 +56,20 @@ public:
 				ListTreeNode* cur = list_head;
 				while (cur)
 				{
-					if (cur->item[0] == node->item[0]) //if symbol is already in alphabet 
+					if (compare_str(cur->item, node->item) == 0) //if symbol is already in alphabet 
 					{
 						cur->frequency++;
 						cur = nullptr;
 					}
-					else if (cur->item[0] < node->item[0])
+					else if (compare_str(cur->item, node->item) == -1)
 					{
 						if (!cur->prev) //add as head of list
 						{
 							list_head = node;
 							node->next = cur;
 							cur->prev = node;
-							
-						}	
+
+						}
 						else //add to the middle of list
 						{
 							node->next = cur;
@@ -89,7 +90,7 @@ public:
 						}
 						else
 							cur = cur->next;
-						
+
 					}
 				}
 			}
@@ -101,7 +102,7 @@ public:
 		{
 			add_to_list(new ListTreeNode(list_head->item, list_head->frequency));
 			list_head = list_head->next;
-		}	
+		}
 	}
 
 	void add_to_list(ListTreeNode* node)
@@ -152,6 +153,7 @@ public:
 
 	void huffman()
 	{
+		if (!head) throw runtime_error("Coding alphabet is empty");
 		while (head != tail)
 		{
 			ListTreeNode* node1 = tail;
@@ -160,10 +162,17 @@ public:
 			node1->parent = node2->parent = sum_node;
 			sum_node->left = node1;
 			sum_node->right = node2;
-			pop_back();
-			pop_back();
+			try
+			{
+				pop_back();
+				pop_back();
+			}
+			catch (out_of_range e)
+			{
+				throw runtime_error(e.what());
+			}
 			add_to_list(sum_node);
-			
+
 		}
 		root = head;
 	}
@@ -177,25 +186,39 @@ public:
 
 	char* code(char* message)
 	{
-		set_alphabet(message);
-		huffman();
-		root->set_code();
 		char* coded_message = nullptr;
-		for (int i = 0; i < strlen(message); i++)
+		try
 		{
-			char* item_to_find = char_to_str(message[i]);
-			ListTreeNode* node = root->find(item_to_find);
-			if (!node) throw runtime_error("wrong coding tree");
-			char * item_code = node->code;
-			coded_message = con_str(coded_message, item_code);
-			coded_message = con_str(coded_message, (char*)" ");
-			//else throw runtime_error("Unknown symbol in a message to code");
+			set_alphabet(message);
+			alphabet->output_list();
+			huffman();
+			root->output_tree(0);
+			root->set_code();
+
+			for (int i = 0; i < strlen(message); i++)
+			{
+				char* item_to_find = char_to_str(message[i]);
+				ListTreeNode* node = root->find(item_to_find);
+				if (!node) throw runtime_error("Unknown symbol in a message to code");
+				char * item_code = node->code;
+				coded_message = con_str(coded_message, item_code);
+				coded_message = con_str(coded_message, (char*)" ");
+			}
+		}
+		catch (invalid_argument e)
+		{
+			throw invalid_argument(e.what());
+		}
+		catch (runtime_error e)
+		{
+			throw runtime_error(e.what());
 		}
 		return coded_message;
 	}
 
 	char* decode(char* message)
 	{
+		if (!message) throw invalid_argument("Message to decode is empty");
 		char* decoded_message = nullptr;
 		ListTreeNode* cur = root;
 		if (root)
@@ -208,6 +231,7 @@ public:
 				}
 				if (message[i] == '1') cur = cur->right;
 				else if (message[i] == '0') cur = cur->left;
+				else if(cur != root)throw runtime_error("Unknown symbol in coded message");
 			}
 		return decoded_message;
 	}
@@ -230,16 +254,16 @@ public:
 			root = nullptr;
 		}
 		else
-		if (head)
-		{
-			do
+			if (head)
 			{
-				ListTreeNode* to_delete = head;
-				head = head->next;
-				delete(to_delete);
-			} while (head);
-			head = tail = nullptr;
-		}
+				do
+				{
+					ListTreeNode* to_delete = head;
+					head = head->next;
+					delete(to_delete);
+				} while (head);
+				head = tail = nullptr;
+			}
 	}
 
 	~ListTree() {}
