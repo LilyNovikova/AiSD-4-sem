@@ -1,6 +1,5 @@
 #pragma once
 #include "ListTreeNode.h"
-#include "List.h"
 
 class ListTree
 {
@@ -156,6 +155,7 @@ public:
 		if (!head) throw runtime_error("Coding alphabet is empty");
 		while (head != tail)
 		{
+			//head->output_list();
 			ListTreeNode* node1 = tail;
 			ListTreeNode* node2 = tail->prev;
 			ListTreeNode* sum_node = new ListTreeNode(con_str(node1->item, node2->item), node1->frequency + node2->frequency);
@@ -190,9 +190,9 @@ public:
 		try
 		{
 			set_alphabet(message);
-			alphabet->output_list();
+			//alphabet->output_list();
 			huffman();
-			root->output_tree(0);
+			//root->output_tree(0);
 			root->set_code();
 
 			for (int i = 0; i < strlen(message); i++)
