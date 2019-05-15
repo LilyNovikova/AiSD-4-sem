@@ -17,6 +17,8 @@ int main()
 	try
 	{
 		road_map.from_file((char*)"1.txt");
+		cout << road_map.count_distance((char*)"piter", (char*)"d") << endl;
+		cout << road_map.show_way((char*)"piter", (char*)"d") << endl;
 	}
 	catch (invalid_argument e)
 	{
@@ -26,11 +28,11 @@ int main()
 	{
 		cout << e.what();
 	}
-/*	road_map.find_ways_from_departure((char*)"a");
+	/*	road_map.find_ways_from_departure((char*)"a");
 
-	road_map.show_result();
-	cout << endl << "Distance from start to 'd' = " << road_map.get_distance((char*)"f") << endl;*/
-	cout << road_map.count_distance((char*)"a", (char*)"z")<<endl;
+		road_map.show_result();
+		cout << endl << "Distance from start to 'd' = " << road_map.get_distance((char*)"f") << endl;*/
+
 
 	system("pause");
 	return 0;

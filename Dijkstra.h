@@ -265,7 +265,7 @@ public:
 				}
 
 				link_to_open->in->opened = 1;	//mark found node as opened 
-				link_to_open->in->path = string_concat(link_to_open->out->path, string_concat((char*)" ", link_to_open->out->name));
+				link_to_open->in->path = string_concat(link_to_open->out->path, string_concat(link_to_open->out->name,(char*)" "));
 				just_opened = link_to_open->in;
 			}
 		}
@@ -289,6 +289,7 @@ public:
 		}
 	}
 
+	//for testing
 	//print "name: path. distance" to every node
 	void show_result()
 	{
@@ -314,22 +315,6 @@ public:
 		else throw runtime_error("The list is empty");
 	}
 
-	//return distance of node with this name
-	int get_distance(char* node)
-	{
-		if (list)
-		{
-			List* cur = list;
-			while (cur)
-			{
-				if (compare_str(cur->node->name, node) == 0) return cur->node->distance;
-				cur = cur->next;
-			}
-			throw invalid_argument("No node with this name");
-		}
-		else throw runtime_error("Can't be found in empty list");
-	}
-
 	void from_file(char* file_name)
 	{
 		char buff1[160];
@@ -351,14 +336,34 @@ public:
 
 	int count_distance(char* from, char* to)
 	{
+		/*if (list->node->distance == 0 && !compare_str(from, list->node->name))
+			return get_distance(to);*/
 		find_ways_from_departure(from);
 		return get_distance(to);
+	}
+
+	char* show_way(char* from, char* to)
+	{
+		if (list->node->distance == 0 && !compare_str(from, list->node->name))
+			if (list)
+			{
+				List* cur = list;
+				while (cur)
+				{
+					if (compare_str(cur->node->name, to) == 0) return cur->node->path;
+					cur = cur->next;
+				}
+				throw invalid_argument("No node with this name");
+			}
+			else throw runtime_error("Can't be found in empty list");
+		else throw runtime_error("Result is not calculated");
+
 	}
 
 private:
 	List * list;
 	int size;
-	char departure;
+	char* departure;
 
 	//move departure node to the head of list (errors: ia, re)
 	void set_start_to_head(char* departure)
@@ -440,4 +445,21 @@ private:
 		int val = str_to_int(str_by_sym(str, split, j));
 		this->add_link(from, to, val);
 	}
+
+	//return distance of node with this name
+	int get_distance(char* node)
+	{
+		if (list)
+		{
+			List* cur = list;
+			while (cur)
+			{
+				if (compare_str(cur->node->name, node) == 0) return cur->node->distance;
+				cur = cur->next;
+			}
+			throw invalid_argument("No node with this name");
+		}
+		else throw runtime_error("Can't be found in empty list");
+	}
+
 };

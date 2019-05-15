@@ -172,13 +172,14 @@ namespace DijkstraTest
 			try
 			{
 				//roads.from_file("1.txt");
-				Assert::AreEqual(0, roads.count_distance((char*)"z", (char*)"a"));
+				Assert::AreEqual(6, roads.count_distance((char*)"a", (char*)"d"));
 			}
 			catch (runtime_error e)
 			{
 				Assert::AreEqual(e.what(), "The list is empty");
-				
+				//Assert::IsFalse(true);
 				//Assert::AreEqual(e.what(), "File not found");
+
 			}
 			catch (invalid_argument e)
 			{
