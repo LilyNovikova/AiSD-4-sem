@@ -71,7 +71,7 @@ namespace UnitTest1
 			}
 			catch (runtime_error e)
 			{
-				Assert::AreEqual(e.what(), "Can't find way from start to finish");
+				Assert::AreEqual(e.what(), "Can't find way from source to sink");
 			}
 		}
 

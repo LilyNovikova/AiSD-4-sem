@@ -94,19 +94,19 @@ public:
 		}
 		cout << endl;
 		if (!this) return nullptr;
-		/*cout << "  cur node: " << name << endl;
-		cout << "     ";
+		cout << "  cur node: " << name << endl;
+		cout << "    out:";
 		for (int j = 0; j < number_out; j++)
 		{
 			cout << out[j]->end->name << "{" << out[j]->flow << "/" << out[j]->bandwidth << "}";
 		}cout << endl;
-		cout << "     ";
+		cout << "     in:";
 		for (int j = 0; j < number_in; j++)
 		{
 			cout << in[j]->begin->name << "{" << in[j]->flow << "/" << in[j]->bandwidth << "}";
 		}cout << endl;
-		*/
-		if (this == sink) return way;
+		if (this == sink)
+			return way;
 		way = (Edge**)realloc(way, (len + 1) * sizeof(Edge*));
 		if (out || in)
 		{
@@ -117,12 +117,19 @@ public:
 				for (int j = 0; j < way_length && no_cycles; j++)
 					if (way[j] == out[i])
 						no_cycles = false;
-				//cout << "     cur edge: " << out[i]->begin->name << out[i]->end->name << endl;
+
 				//
 				if (out[i]->flow < out[i]->bandwidth && no_cycles)
 				{
-					way[way_length] = out[i];
+					cout << "     cur edge: " << out[i]->begin->name << out[i]->end->name << endl;
+					way[len] = out[i];
+					cout << "arr: ";
+					for (int i = 0; i < len; i++)
+					{
+						cout << way[i]->begin->name << way[i]->end->name << "[" << way[i]->flow << "/" << way[i]->bandwidth << "]";
+					}
 					way_length = len + 1;
+
 					current_way = out[i]->end->find_way(sink, way, way_length);
 					if (current_way)
 						return current_way;
@@ -136,11 +143,16 @@ public:
 				for (int j = 0; j < way_length && no_cycles; j++)
 					if (way[j] == in[i])
 						no_cycles = false;
-				//cout << "     cur edge: " << in[i]->begin->name << in[i]->end->name << endl;
+				cout << "     cur edge: " << in[i]->begin->name << in[i]->end->name << endl;
 				//
 				if (in[i]->flow > 0 && no_cycles)
 				{
 					way[way_length] = in[i];
+
+					for (int i = 0; i < way_length && in[i]->begin->name == 'q' && in[i]->end->name == 't'; i++)
+					{
+						cout << way[i]->begin->name << way[i]->end->name << "[" << way[i]->flow << "/" << way[i]->bandwidth << "]";
+					}
 					way_length = len + 1;
 					current_way = in[i]->begin->find_way(sink, way, way_length);
 					if (current_way)
@@ -253,42 +265,58 @@ public:
 		size_t path_length = 0;
 		path = source->find_way(sink, path, path_length);	//find a find_way way from source to sink
 		if (!path) throw runtime_error("Can't find way from source to sink");
+		int k = 0;
 		while (path)
 		{
-			/*cout << "\nbefore:";
-			for (int i = 0; i < path_length; i++)
-			{
-				cout << path[i]->begin->name << path[i]->end->name << "[" << path[i]->flow << "/" << path[i]->bandwidth << "]";
-			}
-			cout << endl;*/
+			k++;
 			int min_bandwidth = path[0]->bandwidth - path[0]->flow;
+			cout << "\nbefore: ";
+			for (int i = 0; i < path_length; i++)
+				cout << path[i]->begin->name << path[i]->end->name << "[" << path[i]->flow << "/" << path[i]->bandwidth << "]";
+			
+			bool prev_direction = true;
 			for (int i = 1; i < path_length; i++)
 			{
-				if (path[i - 1]->end == path[i]->begin)
+				if ((path[i - 1]->end == path[i]->begin && prev_direction) || (path[i - 1]->begin == path[i]->begin && !prev_direction))
 				{
-					if (path[i]->bandwidth < min_bandwidth)
+					if (path[i]->bandwidth - path[i]->flow < min_bandwidth)
 						min_bandwidth = path[i]->bandwidth - path[i]->flow;
+					prev_direction = true;
 				}
 				else
+				{
+					prev_direction = false;
 					if (path[i]->flow < min_bandwidth)
 						min_bandwidth = path[i]->flow;
+				}
+
 			}
 
 			path[0]->flow += min_bandwidth;
+			prev_direction = true;
 			for (int i = 1; i < path_length; i++)
-				if (path[i - 1]->end == path[i]->begin)
+				if ((path[i - 1]->end == path[i]->begin && prev_direction) || (path[i - 1]->begin == path[i]->begin && !prev_direction))
+				{
+					prev_direction = true;
 					path[i]->flow += min_bandwidth;
+				}
 				else
+				{
+					prev_direction = false;
 					path[i]->flow -= min_bandwidth;
+				}
 
+			
 			cout << "\nafter: ";
 			for (int i = 0; i < path_length; i++)
 				cout << path[i]->begin->name << path[i]->end->name << "[" << path[i]->flow << "/" << path[i]->bandwidth << "]";
 			path_length = 0;
-			
+
+			if (k == 3)
+				cout << "";
+
 			path = source->find_way(sink, path, path_length);	//find a find_way way from source to sink
 		}
-
 	}
 
 	void show_edges()
