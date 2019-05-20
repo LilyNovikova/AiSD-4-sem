@@ -11,24 +11,7 @@ namespace UnitTest1
 	{
 	public:
 
-		TEST_METHOD(example_from_teacher_file)
-		{
-			try
-			{
-				Web web;
-				web.from_file();
-				web.FordFulkerson();
-				Assert::IsTrue(false);
-				//Assert::AreEqual(5, web.summ_flow());
-			}
-			catch (runtime_error e)
-			{
-				//Assert::IsTrue(false);
-				Assert::AreEqual(e.what(), "File not found");
-			}
-		}
-
-		TEST_METHOD(example_from_teacher)
+		TEST_METHOD(example_from_task)
 		{
 			Web web;
 			web.add_edge('s', 'o', 3);
@@ -44,7 +27,7 @@ namespace UnitTest1
 			Assert::AreEqual(5, web.summ_flow());
 		}
 
-		TEST_METHOD(example_from_wiki)
+		TEST_METHOD(example_wiki)
 		{
 			Web web;
 			web.add_edge('s', 'a', 5);
@@ -58,6 +41,46 @@ namespace UnitTest1
 
 			web.FordFulkerson();
 			Assert::AreEqual(7, web.summ_flow());
+		}
+
+		TEST_METHOD(no_source)
+		{
+			try
+			{
+				Web web;
+				web.add_edge('o', 'p', 2);
+				web.add_edge('o', 'q', 3);
+				web.add_edge('p', 'r', 2);
+				web.add_edge('q', 'r', 4);
+				web.add_edge('q', 't', 2);
+				web.add_edge('r', 't', 3);
+
+				web.FordFulkerson();
+			}
+			catch (runtime_error e)
+			{
+				Assert::AreEqual(e.what(), "Source not found");
+			}
+		}
+
+		TEST_METHOD(no_sink)
+		{
+			try
+			{
+				Web web;
+				web.add_edge('s', 'a', 5);
+				web.add_edge('s', 'b', 2);
+				web.add_edge('o', 'p', 2);
+				web.add_edge('o', 'q', 3);
+				web.add_edge('p', 'r', 2);
+				web.add_edge('q', 'r', 4);
+
+				web.FordFulkerson();
+			}
+			catch (runtime_error e)
+			{
+				Assert::AreEqual(e.what(), "Sink not found");
+			}
 		}
 
 		TEST_METHOD(no_way)

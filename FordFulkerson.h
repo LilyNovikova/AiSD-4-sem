@@ -88,23 +88,7 @@ public:
 	Edge** find_way(Node* sink, Edge** way, size_t& way_length)
 	{
 		size_t len = way_length;
-		for (int i = 0; i < way_length; i++)
-		{
-			cout << way[i]->begin->name << way[i]->end->name << "[" << way[i]->flow << "/" << way[i]->bandwidth << "]";
-		}
-		cout << endl;
 		if (!this) return nullptr;
-		cout << "  cur node: " << name << endl;
-		cout << "    out:";
-		for (int j = 0; j < number_out; j++)
-		{
-			cout << out[j]->end->name << "{" << out[j]->flow << "/" << out[j]->bandwidth << "}";
-		}cout << endl;
-		cout << "     in:";
-		for (int j = 0; j < number_in; j++)
-		{
-			cout << in[j]->begin->name << "{" << in[j]->flow << "/" << in[j]->bandwidth << "}";
-		}cout << endl;
 		if (this == sink)
 			return way;
 		way = (Edge**)realloc(way, (len + 1) * sizeof(Edge*));
@@ -118,16 +102,9 @@ public:
 					if (way[j] == out[i])
 						no_cycles = false;
 
-				//
 				if (out[i]->flow < out[i]->bandwidth && no_cycles)
 				{
-					cout << "     cur edge: " << out[i]->begin->name << out[i]->end->name << endl;
 					way[len] = out[i];
-					cout << "arr: ";
-					for (int i = 0; i < len; i++)
-					{
-						cout << way[i]->begin->name << way[i]->end->name << "[" << way[i]->flow << "/" << way[i]->bandwidth << "]";
-					}
 					way_length = len + 1;
 
 					current_way = out[i]->end->find_way(sink, way, way_length);
@@ -135,7 +112,6 @@ public:
 						return current_way;
 					way = cut_array(way, way_length, len + 1);
 				}
-
 			}
 			for (int i = 0; i < number_in; i++)
 			{
@@ -143,23 +119,15 @@ public:
 				for (int j = 0; j < way_length && no_cycles; j++)
 					if (way[j] == in[i])
 						no_cycles = false;
-				cout << "     cur edge: " << in[i]->begin->name << in[i]->end->name << endl;
-				//
 				if (in[i]->flow > 0 && no_cycles)
 				{
 					way[way_length] = in[i];
-
-					for (int i = 0; i < way_length && in[i]->begin->name == 'q' && in[i]->end->name == 't'; i++)
-					{
-						cout << way[i]->begin->name << way[i]->end->name << "[" << way[i]->flow << "/" << way[i]->bandwidth << "]";
-					}
 					way_length = len + 1;
 					current_way = in[i]->begin->find_way(sink, way, way_length);
 					if (current_way)
 						return current_way;
 					way = cut_array(way, way_length, len + 1);
 				}
-
 			}
 		}
 		return nullptr;
@@ -173,7 +141,6 @@ private:
 	Node* sink;
 	Edge** edges; //array of pointers to edges
 	int number_edges;
-	bool calculated;
 
 	void res_show_in_width(Node* current)
 	{
@@ -191,7 +158,6 @@ public:
 		sink = nullptr;
 		edges = nullptr;
 		number_edges = 0;
-		calculated = 0;
 	};
 
 	~Web()
@@ -261,19 +227,15 @@ public:
 
 	void FordFulkerson()
 	{
+		if (!source) throw runtime_error("Source not found");
+		if (!sink) throw runtime_error("Sink not found");
 		Edge** path = nullptr;
 		size_t path_length = 0;
 		path = source->find_way(sink, path, path_length);	//find a find_way way from source to sink
 		if (!path) throw runtime_error("Can't find way from source to sink");
-		int k = 0;
 		while (path)
 		{
-			k++;
 			int min_bandwidth = path[0]->bandwidth - path[0]->flow;
-			cout << "\nbefore: ";
-			for (int i = 0; i < path_length; i++)
-				cout << path[i]->begin->name << path[i]->end->name << "[" << path[i]->flow << "/" << path[i]->bandwidth << "]";
-			
 			bool prev_direction = true;
 			for (int i = 1; i < path_length; i++)
 			{
@@ -306,15 +268,7 @@ public:
 					path[i]->flow -= min_bandwidth;
 				}
 
-			
-			cout << "\nafter: ";
-			for (int i = 0; i < path_length; i++)
-				cout << path[i]->begin->name << path[i]->end->name << "[" << path[i]->flow << "/" << path[i]->bandwidth << "]";
 			path_length = 0;
-
-			if (k == 3)
-				cout << "";
-
 			path = source->find_way(sink, path, path_length);	//find a find_way way from source to sink
 		}
 	}
